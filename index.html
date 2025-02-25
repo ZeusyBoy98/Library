@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JLib</title>
+    <style>
+        div {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .hdr {
+            display: inline-block;
+        }
+
+        button {
+            outline: none;
+            border: none;
+            border-radius: 1vw;
+        }
+
+        .container {
+            display: flex;
+            gap: 5vw;
+            background-color: rgb(0, 255, 242);
+            border-radius: 1vw;
+        }
+
+        .boktxt {
+            font-family: Arial;
+            font-size: 2vw;
+        }
+
+        .bokcont {
+            border-style: solid;
+            border-color: rgb(78, 78, 78);
+            border-width: 0.2vw;
+            border-radius: 1vw;
+            background-color: rgb(165, 165, 165);
+        }
+
+        .poop {
+            position: absolute;
+            display: none;
+            left: 30vw;
+            border-style: solid;
+            border-color: rgb(45, 45, 45);
+            border-width: 0.2vw;
+            border-radius: 1vw;
+            background-color: rgb(167, 167, 167);
+            height: 50vh;
+            width: 40vw;
+        }
+
+        .left {
+            margin-left: 2vw;
+        }
+
+        .top {
+            margin-top: 2vh;
+        }
+
+        #id {
+            margin-left: 3vw;
+        }
+    </style>
+</head>
+<body>
+    <div class="hdr" style="font-size: 3vw; font-weight: bold;">JLib</div>
+    <button style="margin-left: 10vw;" class="hdr" id="nwbk">New Book</button>
+    <form class="poop" id="bkfrm">
+        <label for="title" class="left top">Title:</label>
+        <input type="text" id="title">
+            
+        <label for="author">Author:</label>
+        <input type="text" id="author">
+        <br>
+        <label for="pages" class="left">Pages:</label>
+        <input type="number" id="pages">
+
+        <label for="read">Read:</label>
+        <input type="checkbox" id="read">
+
+        <button id="submit" type="submit">Submit</button>
+
+        <button id="cancel">Cancel</button>
+    </form>
+    <div class="container" id="library"></div>
+    <script>
+        const bookbutt = document.getElementById("nwbk");
+        const canbutt = document.getElementById("cancel");
+        const newbokform = document.getElementById("bkfrm");
+        const lib = document.getElementById("library");
+        const sub = document.getElementById("submit");
+
+        const myLibrary = [];
+
+        function Book(title, author, pages, read) {
+            this.title = title;
+            this.author = author;
+            this.pages = pages;
+            this.read = read;
+        };
+
+        function addBookToLibrary(title, author, pages, read) {
+            const newBook = new Book(title, author, pages, read);
+            myLibrary.push(newBook);
+            displayBook();
+        };
+
+        function displayBook() {
+            lib.innerHTML = "";
+            for (let i = 0; i < myLibrary.length; i++) {
+                let bok = document.createElement("div");
+                let removeButton = document.createElement("button")
+                let readButton = document.createElement("button");
+                removeButton.removeAttribute("data-index");
+                readButton.removeAttribute("data-index");
+                removeButton.innerHTML = "<button id='rm'>X</button>"
+                readButton.innerHTML = "<button id='rd'>Read</button>"
+                bok.className = "bokcont";
+                bok.innerHTML = "<div class='boktxt'>Title: " + myLibrary[i].title + "</div><div class='boktxt'>Author: " + myLibrary[i].author + "</div><div class='boktxt'>Pages: " + myLibrary[i].pages + "</div><div class='boktxt'>Read: " + myLibrary[i].read + "</div>";
+                removeButton.setAttribute("data-index", i);
+                readButton.setAttribute("data-index", i);
+                console.log(removeButton.getAttribute("data-index"));
+                bok.appendChild(removeButton);
+                bok.appendChild(readButton);
+                lib.appendChild(bok);
+            }
+        }
+
+        bookbutt.addEventListener("click", function(){
+            newbokform.style.display = "block";
+        });
+
+        canbutt.addEventListener("click", function(){
+            event.preventDefault();
+            newbokform.style.display = "none";
+        });
+
+        sub.addEventListener("click", function(){
+            event.preventDefault(); 
+            console.log("Submitted!")
+            let title = document.getElementById("title").value;
+            let author = document.getElementById("author").value;
+            let pages = document.getElementById("pages").value;
+            let read = document.getElementById("read").checked;
+            console.log(read);
+            addBookToLibrary(title, author, pages, read);
+            newbokform.style.display = "none";
+        });
+
+        lib.addEventListener("click", function(){
+            if (event.target.id === "rm"){
+                let index = event.target.parentElement.getAttribute("data-index");
+                console.log(index);
+                myLibrary.splice(index, 1);
+                displayBook();
+            } else if (event.target.id === "rd"){
+                let index = event.target.parentElement.getAttribute("data-index");
+                console.log(index);
+                if (myLibrary[index].checked = true) {
+                    myLibrary[index].checked = false;
+                } else if (myLibrary[index].checked = false) {
+                    myLibrary[index].checked = true;
+                } else {
+                    console.log("Something went very wrong here");
+                };
+                displayBook();
+            };
+        });
+    </script>
+</body>
+</html>
